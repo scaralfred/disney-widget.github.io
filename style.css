@@ -19,6 +19,26 @@
     display: none;
 }
 
+#get-it-now {
+    position: absolute; 
+    left: 15%; 
+    top:27%; 
+    height: 28px; 
+    width: 120px;
+}
+
+#get-it-now:hover, #get-it-now-footer:hover {
+background:rgba(30, 196, 231, 0.4);
+}
+
+#get-it-now-footer {
+    position: absolute; 
+    left: 32%; 
+    bottom: 5%;
+    height: 24px; 
+    width: 108px;
+}
+
 .slide-in {
     transform: translateX(-100%);
     transition: all 0.5s ease;
