@@ -4,7 +4,7 @@
     justify-content: center;
     flex-direction: row;
     align-items: center;
-}
+} 
 
 #anim-container {
     position: relative;
@@ -17,6 +17,16 @@
 
 .hide {
     display: none;
+}
+
+.slide-in {
+    transform: translateX(-100%);
+    transition: all 0.5s ease;
+}
+
+.slide-out {
+    transform: translateX(-100%);
+    transition: all 0.5s ease;
 }
 
 #i-footer {
