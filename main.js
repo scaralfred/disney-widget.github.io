@@ -153,11 +153,18 @@ document.getElementById("i-footer").addEventListener('click', () => {
 });
 
 if (isMobile) {
+    let isVideoPlaying = false;
     let videos = document.getElementsByTagName("video");
     for (let i = 1; i <= videos.length; i++) {
         document.getElementById('video'+ i).addEventListener('click', ()=> {
-            playVideo(currentVideo);
-            // document.getElementById("video" + currentVideo).onended = function () { console.log('video ended');} 
+            if (!isVideoPlaying) {
+                playVideo(currentVideo);
+                isVideoPlaying = true;
+            } else {
+                pauseVideo(currentVideo);
+                isVideoPlaying = false;
+            }
+            
         })
     }
 };
