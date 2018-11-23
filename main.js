@@ -10,7 +10,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 
 let currentVideo = 1;
 let videoAudio = false;
-let firstLoopCompleted = false;
+let isVideoPlaying = false;
 let stopVideoLoop = () => clearInterval(videoLoop);
 let getVideo = (currentVideo) => document.getElementById("video" + currentVideo + "-container");
 let pauseVideo = (currentVideo) => document.getElementById("video" + currentVideo).pause();
@@ -21,82 +21,104 @@ let getFooter = () => document.getElementById('i-footer');
 
 isMobile ? null : playVideo(currentVideo);
 getFooter().classList.add('banner-slide-in');
+getVideo(currentVideo).style.left = "0%";
+let moveSlideBack = (slide) => {
+        slide.style.transition = "none";
+        slide.style.left = "-100%";
+        setTimeout(() => { slide.style.transition = "all 0.5s linear"; }, 100);
+}
+let moveSlideRight = (slide) => {
+        slide.style.transition = "none";
+        slide.style.left = "100%";
+        setTimeout(() => { slide.style.transition = "all 0.5s linear"; }, 100);
+}
+moveSlideBack(getBackgroundImage());
 
 if(!isMobile) { 
     var videoLoop = setInterval(() => {
-    getVideo(currentVideo).classList.add('hide');
+    getVideo(currentVideo).style.left = "-100%";
     pauseVideo(currentVideo);
     if (currentVideo < 5) { 
-        getVideo(++currentVideo).classList.remove('hide');
+        if (currentVideo === 4) { moveSlideRight(getBackgroundImage()) }
+        if (currentVideo === 3) { moveSlideRight(getVideo(5)) }
+        if (currentVideo === 2) { moveSlideRight(getVideo(4)) }
+        if (currentVideo === 1) { moveSlideRight(getVideo(3)) }
+        if (currentVideo === 0) { moveSlideRight(getVideo(2)) };
+        getVideo(++currentVideo).style.left = "0%";
         playVideo(currentVideo);
     } else if (currentVideo === 5) {
-        getBackgroundImage().classList.remove('hide');
-        getFooter().classList.remove('banner-slide-in');
+        getBackgroundImage().style.left = "0%";
         getFooter().classList.add('banner-slide-out');
         pauseVideo(currentVideo);
         reloadVideo(currentVideo);
         currentVideo = 0;
         stopVideoLoop();
-        firstLoopCompleted = true;
+        moveSlideRight(getVideo(1));
     }
 }, 2000);
 };
 
 document.getElementById("button-right").addEventListener("click", () => {
-    isMobile ? null : stopVideoLoop();
+    isMobile ? displayPlayButton() : stopVideoLoop();
         if (currentVideo === 0) {
-            getBackgroundImage().classList.add('hide');
+            moveSlideRight(getVideo(2));
+            getBackgroundImage().style.left = "-100%";
             getFooter().classList.remove('banner-slide-out');
             getFooter().classList.add('banner-slide-in');
-            pauseVideo(++currentVideo);
-            reloadVideo(currentVideo);
-            getVideo(currentVideo).classList.remove('hide');
+            getVideo(++currentVideo).style.left = "0%";
             isMobile ? null : playVideo(currentVideo);
         } else if (currentVideo === 5) {
+            moveSlideRight(getVideo(1));
             pauseVideo(currentVideo);
             reloadVideo(currentVideo);
-            getVideo(currentVideo).classList.add('hide');
+            getVideo(currentVideo).style.left = "-100%";
             currentVideo = 0;
-            getBackgroundImage().classList.remove('hide');
-            getFooter().classList.remove('banner-slide-in');
+            getBackgroundImage().style.left = "0%";
             getFooter().classList.add('banner-slide-out');
-            firstLoopCompleted = true;
         } else {
-            pauseVideo(currentVideo);
+            if (currentVideo === 4) { moveSlideRight(getBackgroundImage())}
+            if (currentVideo === 3) { moveSlideRight(getVideo(5))}
+            if (currentVideo === 2) { moveSlideRight(getVideo(4))}
+            if (currentVideo === 1) { moveSlideRight(getVideo(3))};
             reloadVideo(currentVideo);
-            getVideo(currentVideo).classList.add('hide');
+            getVideo(currentVideo).style.left = "-100%";
             pauseVideo(currentVideo);
-            getVideo(++currentVideo).classList.remove('hide');
+            getVideo(++currentVideo).style.left = "0%";
             isMobile ? null : playVideo(currentVideo);
         }
         if(videoAudio) { startSlowVideoLoop() }
-    console.log(currentVideo)
 });
 
 document.getElementById("button-left").addEventListener("click", () => {
-    isMobile ? null : stopVideoLoop();
+    isMobile ? displayPlayButton() : stopVideoLoop();
     if (currentVideo === 0) {
-        getBackgroundImage().classList.add('hide');
+        getBackgroundImage().style.left = "100%";
         getFooter().classList.remove('banner-slide-out');
         getFooter().classList.add('banner-slide-in');
         currentVideo = 5
-        getVideo(currentVideo).classList.remove('hide');
+        getVideo(currentVideo).style.left = "0%";
         isMobile ? null : playVideo(currentVideo);
+        moveSlideBack(getVideo(4));
     } else if (currentVideo === 1) {
         pauseVideo(currentVideo);
         reloadVideo(currentVideo);
-        getVideo(currentVideo--).classList.add('hide');
-        getBackgroundImage().classList.remove('hide');
+        getVideo(currentVideo).style.left = "100%";
+        getBackgroundImage().style.left = "0%";
         getFooter().classList.remove('banner-slide-in');
         getFooter().classList.add('banner-slide-out');
+        currentVideo = 0;
+        moveSlideBack(getVideo(5));
     } else {
+        if (currentVideo === 5) { moveSlideBack(getVideo(3)) }
+        if (currentVideo === 4) { moveSlideBack(getVideo(2)) }
+        if (currentVideo === 3) { moveSlideBack(getVideo(1)) }
+        if (currentVideo === 2) { moveSlideBack(getBackgroundImage()) };
         pauseVideo(currentVideo);
         reloadVideo(currentVideo);
-        getVideo(currentVideo).classList.add('hide');
-        getVideo(--currentVideo).classList.remove('hide');
+        getVideo(currentVideo).style.left = "100%";
+        getVideo(--currentVideo).style.left = "0%";
         isMobile ? null : playVideo(currentVideo);
     }
-    console.log(currentVideo)
 });
 
 let muteVideos = document.querySelectorAll('.button-speaker');
@@ -123,49 +145,71 @@ let startSlowVideoLoop = () => {
 if (currentVideo !== 0) {
     let video = document.getElementById("video" + currentVideo);
     video.onended = function () {
-        getVideo(currentVideo).classList.add('hide');
+        getVideo(currentVideo).style.left = "-100%";
         if (currentVideo < 5) {
+            if (currentVideo === 4) { moveSlideRight(getBackgroundImage()) }
+            if (currentVideo === 3) { moveSlideRight(getVideo(5)) }
+            if (currentVideo === 2) { moveSlideRight(getVideo(4)) }
+            if (currentVideo === 1) { moveSlideRight(getVideo(3)) }
+            if (currentVideo === 0) { moveSlideRight(getVideo(2)) };
             ++currentVideo;
-            getVideo(currentVideo).classList.remove('hide');
+            getVideo(currentVideo).style.left = "0%";
             isMobile ? null : playVideo(currentVideo);
             document.getElementById("video" + currentVideo).loop = false;
             startSlowVideoLoop();
         } else if (currentVideo === 5) {
             currentVideo = 0;
-            getBackgroundImage().classList.remove('hide');
+            getBackgroundImage().style.left = "0%";
             getFooter().classList.remove('banner-slide-in');
             getFooter().classList.add('banner-slide-out');
+            moveSlideRight(getVideo(1));
         }
       }
     };
 };
 
 document.getElementById("i-footer").addEventListener('click', () => {
-    if (currentVideo > 0) {
+        getBackgroundImage().style.left = "0%";
+        getVideo(currentVideo).style.left = "100%";
+        for (let i = 1; i < 5; i++) {
+            moveSlideRight(getVideo(i));
+        }
+        moveSlideBack(getVideo(5));
         pauseVideo(currentVideo);
         reloadVideo(currentVideo);
-        getVideo(currentVideo).classList.add('hide');
         currentVideo = 0;
-        getBackgroundImage().classList.remove('hide');
         getFooter().classList.remove('banner-slide-in');
         getFooter().classList.add('banner-slide-out');
-    }
+    
 });
 
+/// MOBILE LOGIC  ///
+
+let displayPlayButton = () => {
+    let playIcon = document.getElementsByClassName("play-button");
+    for (let i = 0; i < playIcon.length; i++) {
+        playIcon[i].style.display = "block";
+        isVideoPlaying = false;
+    }
+};
+
 if (isMobile) {
-    let isVideoPlaying = false;
+    displayPlayButton();
     let videos = document.getElementsByTagName("video");
+    let playIcon = document.getElementsByClassName("play-button");
     for (let i = 1; i <= videos.length; i++) {
-        document.getElementById('video'+ i).addEventListener('click', ()=> {
+        document.getElementById('video'+ i + '-container').addEventListener('click', ()=> {
+            
             if (!isVideoPlaying) {
                 playVideo(currentVideo);
                 isVideoPlaying = true;
+                playIcon[i-1].style.display = "none";
             } else {
                 pauseVideo(currentVideo);
                 isVideoPlaying = false;
+                playIcon[i-1].style.display = "block";
             }
-            
-        })
+        });
     }
 };
 

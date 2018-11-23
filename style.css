@@ -16,7 +16,19 @@
 }
 
 .hide {
-    display: none;
+    position: absolute;
+    left: 100%;
+    transition: all 0.5s linear;
+}
+
+.slide-center {
+    position: absolute;
+    left: 0%;
+}
+
+.slide-left {
+    position: absolute;
+    left: -100%;
 }
 
 #get-it-now {
@@ -24,29 +36,21 @@
     left: 15%; 
     top:27%; 
     height: 28px; 
-    width: 120px;
-}
-
-#get-it-now:hover, #get-it-now-footer:hover {
-background:rgba(30, 196, 231, 0.4);
+    width: 121px;
+    border-radius: 5px;
 }
 
 #get-it-now-footer {
     position: absolute; 
-    left: 32%; 
+    left: 98px; 
     bottom: 5%;
     height: 24px; 
-    width: 108px;
+    width: 104px;
+    border-radius: 5px;
 }
 
-.slide-in {
-    transform: translateX(-100%);
-    transition: all 0.5s ease;
-}
-
-.slide-out {
-    transform: translateX(-100%);
-    transition: all 0.5s ease;
+#get-it-now:hover, #get-it-now-footer:hover {
+background:rgba(30, 196, 231, 0.4);
 }
 
 #i-footer {
@@ -85,8 +89,8 @@ background:rgba(30, 196, 231, 0.4);
 
 .button-speaker {
     position: absolute;
-    right: 2%;
-    top: 50%
+    right: 5%;
+    top: 65%
 }
 
 .button-speaker:hover {
@@ -104,3 +108,10 @@ background:rgba(30, 196, 231, 0.4);
     transition: all 0.5s ease;
 }
 
+.play-button {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
