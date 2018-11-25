@@ -11,6 +11,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 let currentVideo = 1;
 let videoAudio = false;
 let isVideoPlaying = false;
+let firstLoopCompleted = false;
 let stopVideoLoop = () => clearInterval(videoLoop);
 let getVideo = (currentVideo) => document.getElementById("video" + currentVideo + "-container");
 let pauseVideo = (currentVideo) => document.getElementById("video" + currentVideo).pause();
@@ -54,6 +55,7 @@ if(!isMobile) {
         currentVideo = 0;
         stopVideoLoop();
         moveSlideRight(getVideo(1));
+        firstLoopCompleted = true;
     }
 }, 2000);
 };
@@ -67,6 +69,7 @@ document.getElementById("button-right").addEventListener("click", () => {
             getFooter().classList.add('banner-slide-in');
             getVideo(++currentVideo).style.left = "0%";
             isMobile ? null : playVideo(currentVideo);
+            if (firstLoopCompleted) { unmuteVideos(); }
         } else if (currentVideo === 5) {
             moveSlideRight(getVideo(1));
             pauseVideo(currentVideo);
@@ -75,6 +78,7 @@ document.getElementById("button-right").addEventListener("click", () => {
             currentVideo = 0;
             getBackgroundImage().style.left = "0%";
             getFooter().classList.add('banner-slide-out');
+            if (!firstLoopCompleted) { firstLoopCompleted = true }
         } else {
             if (currentVideo === 4) { moveSlideRight(getBackgroundImage())}
             if (currentVideo === 3) { moveSlideRight(getVideo(5))}
@@ -99,6 +103,7 @@ document.getElementById("button-left").addEventListener("click", () => {
         getVideo(currentVideo).style.left = "0%";
         isMobile ? null : playVideo(currentVideo);
         moveSlideBack(getVideo(4));
+        if (firstLoopCompleted) { unmuteVideos(); }
     } else if (currentVideo === 1) {
         pauseVideo(currentVideo);
         reloadVideo(currentVideo);
@@ -108,6 +113,7 @@ document.getElementById("button-left").addEventListener("click", () => {
         getFooter().classList.add('banner-slide-out');
         currentVideo = 0;
         moveSlideBack(getVideo(5));
+        if (!firstLoopCompleted) { firstLoopCompleted = true }
     } else {
         if (currentVideo === 5) { moveSlideBack(getVideo(3)) }
         if (currentVideo === 4) { moveSlideBack(getVideo(2)) }
@@ -118,26 +124,28 @@ document.getElementById("button-left").addEventListener("click", () => {
         getVideo(currentVideo).style.left = "100%";
         getVideo(--currentVideo).style.left = "0%";
         isMobile ? null : playVideo(currentVideo);
+        if (firstLoopCompleted) { unmuteVideos(); }
     }
 });
 
-let muteVideos = document.querySelectorAll('.button-speaker');
-
-for (let i = 0; i < muteVideos.length; i++) {
-    muteVideos[i].addEventListener('click', 
-        function unmuteVideos() {
+let unmuteVideos = () => {
             let videos = document.getElementsByClassName('button-speaker');
-            for (i = 0; i < videos.length; i++) {
+            for (let i = 0; i < videos.length; i++) {
                 videos[i].style.display = 'none';
             };
-            for (i = 1; i <= document.querySelectorAll('video').length; i++) {
+            for (let i = 1; i <= document.querySelectorAll('video').length; i++) {
                 document.getElementById("video" + i).muted = false;
                 document.getElementById("video" + i).loop = false;
             };
             videoAudio = true;
             isMobile ? null : stopVideoLoop();
             isMobile ? null : startSlowVideoLoop();
-        });
+        };
+
+let muteVideos = document.querySelectorAll('.button-speaker');
+
+for (let i = 0; i < muteVideos.length; i++) {
+    muteVideos[i].addEventListener('click', () => unmuteVideos());
 }
 
 let startSlowVideoLoop = () => {
